@@ -8,10 +8,10 @@ import { Menu, MapPin, Compass, Users, Bot, BarChart3, User } from "lucide-react
 
 const navigationItems = [
   { name: "Home", href: "/" },
-  { name: "Data Hub", href: "/dashboard/data-hub" },
-  { name: "AI Guide", href: "/dashboard/ai-guide" },
-  { name: "Virtual Tours", href: "/dashboard/virtual" },
-  { name: "Dashboard", href: "/dashboard" },
+  { name: "Data Hub", href: "#" },
+  { name: "AI Guide", href: "#" },
+  { name: "Virtual Tours", href: "#" },
+  // { name: "Dashboard", href: "/dashboard" },
 ];
 
 export default function Navbar() {
