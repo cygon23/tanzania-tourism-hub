@@ -1,28 +1,53 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, MapPin, Compass, Users, Bot, BarChart3, User } from "lucide-react";
+import { Menu, MapPin } from "lucide-react";
 
 const navigationItems = [
-  { name: "Home", href: "/" },
-  { name: "Data Hub", href: "#" },
-  { name: "AI Guide", href: "#" },
-  { name: "Virtual Tours", href: "#" },
-  // { name: "Dashboard", href: "/dashboard" },
+  { name: "Home", href: "#hero" },
+  { name: "Services", href: "#services" },
+  { name: "Process", href: "#process" },
+  { name: "Partners", href: "#partners" },
+  { name: "About", href: "#about" },
 ];
+
+const scrollToSection = (href: string) => {
+  if (href.startsWith('#')) {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+};
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("#hero");
   const navRef = useRef<HTMLElement>(null);
-  const location = useLocation();
 
+  // Scroll spy effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+
+      // Scroll spy logic
+      const sections = navigationItems.map(item => item.href.substring(1));
+      const scrollPosition = window.scrollY + 100;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section) {
+          const offsetTop = section.offsetTop;
+          if (scrollPosition >= offsetTop) {
+            setActiveSection(`#${sections[i]}`);
+            break;
+          }
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -66,20 +91,22 @@ export default function Navbar() {
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList className="flex space-x-1">
               {navigationItems.map((item) => {
-                const isActive = location.pathname === item.href;
-                
+                const isActive = activeSection === item.href;
                 return (
                   <NavigationMenuItem key={item.name}>
-                    <Link
-                      to={item.href}
-                      className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                    <button
+                      onClick={() => scrollToSection(item.href)}
+                      className={`relative px-4 py-2 rounded-full transition-all duration-300 ${
                         isActive
-                          ? "bg-safari/10 text-safari font-medium"
+                          ? "text-safari font-medium"
                           : "text-foreground/80 hover:text-safari hover:bg-safari/5"
                       }`}
                     >
                       {item.name}
-                    </Link>
+                      {isActive && (
+                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-safari rounded-full" />
+                      )}
+                    </button>
                   </NavigationMenuItem>
                 );
               })}
@@ -89,13 +116,12 @@ export default function Navbar() {
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
             <Link to="/auth">
-              <Button variant="outline" className="border-safari/30 text-safari hover:bg-safari/10">
-                <User className="w-4 h-4 mr-2" />
+              <Button variant="outline" className="rounded-full border-safari/30 text-safari hover:bg-safari/10 px-6">
                 Sign In
               </Button>
             </Link>
             <Link to="/auth">
-              <Button className="bg-gradient-to-r from-safari to-ocean hover:from-safari-light hover:to-ocean-light">
+              <Button className="rounded-full bg-gradient-to-r from-safari to-ocean hover:from-safari-light hover:to-ocean-light px-6">
                 Get Started
               </Button>
             </Link>
@@ -123,21 +149,22 @@ export default function Navbar() {
                 {/* Mobile Navigation */}
                 <div className="flex flex-col space-y-2">
                   {navigationItems.map((item) => {
-                    const isActive = location.pathname === item.href;
-                    
+                    const isActive = activeSection === item.href;
                     return (
-                      <Link
+                      <button
                         key={item.name}
-                        to={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`px-4 py-3 rounded-lg transition-all duration-200 ${
+                        onClick={() => {
+                          scrollToSection(item.href);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className={`px-4 py-3 rounded-full text-left transition-all duration-200 ${
                           isActive
-                            ? "bg-safari/10 text-safari font-medium"
+                            ? "text-safari font-medium bg-safari/10"
                             : "text-foreground/80 hover:text-safari hover:bg-safari/5"
                         }`}
                       >
                         {item.name}
-                      </Link>
+                      </button>
                     );
                   })}
                 </div>
@@ -145,13 +172,12 @@ export default function Navbar() {
                 {/* Mobile Auth Buttons */}
                 <div className="flex flex-col space-y-3 pt-4 border-t border-border/50">
                   <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full border-safari/30 text-safari hover:bg-safari/10">
-                      <User className="w-4 h-4 mr-2" />
+                    <Button variant="outline" className="w-full rounded-full border-safari/30 text-safari hover:bg-safari/10">
                       Sign In
                     </Button>
                   </Link>
                   <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="w-full bg-gradient-to-r from-safari to-ocean hover:from-safari-light hover:to-ocean-light">
+                    <Button className="w-full rounded-full bg-gradient-to-r from-safari to-ocean hover:from-safari-light hover:to-ocean-light">
                       Get Started
                     </Button>
                   </Link>

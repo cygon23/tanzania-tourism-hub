@@ -128,8 +128,8 @@ export default function Hero() {
         {/* Stats Bar */}
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
           {[
-            { value: "50+", label: "Data Points" },
-            { value: "4+", label: "Partners" },
+            { value: "50K+", label: "Data Points" },
+            { value: "150+", label: "Partners" },
             { value: "24/7", label: "Real-time Analytics" },
             { value: "99.9%", label: "Uptime" },
           ].map((stat, index) => (

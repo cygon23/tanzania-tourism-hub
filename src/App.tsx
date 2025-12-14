@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { UserProvider, useUser } from "@/contexts/UserContext";
 import TourismLoader from "@/components/TourismLoader";
 import Navbar from "@/components/Navbar";
@@ -20,9 +20,28 @@ function AppContent() {
   const { isLoading, isAuthenticated } = useUser();
   const location = useLocation();
   const hideNavbar = location.pathname === '/auth' || isAuthenticated;
+  const [showInitialLoader, setShowInitialLoader] = useState(true);
+
+  // Only show loader on initial page load, not on navigation
+  useEffect(() => {
+    const hasLoaded = sessionStorage.getItem('app-loaded');
+    if (hasLoaded) {
+      setShowInitialLoader(false);
+    } else {
+      const timer = setTimeout(() => {
+        setShowInitialLoader(false);
+        sessionStorage.setItem('app-loaded', 'true');
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  if (showInitialLoader && !sessionStorage.getItem('app-loaded')) {
+    return <TourismLoader />;
+  }
 
   if (isLoading) {
-    return <TourismLoader />;
+    return null;
   }
 
   return (
@@ -31,12 +50,12 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={
-          <Suspense fallback={<TourismLoader />}>
+          <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <Auth />
           </Suspense>
         } />
         <Route path="/dashboard/*" element={
-          <Suspense fallback={<TourismLoader />}>
+          <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <Dashboard />
           </Suspense>
         } />

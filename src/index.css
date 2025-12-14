@@ -63,7 +63,12 @@ All colors MUST be HSL.
     --shadow-sunset: 0 10px 40px -10px hsl(var(--sunset-orange) / 0.3);
     --shadow-ocean: 0 10px 40px -10px hsl(var(--ocean-blue) / 0.3);
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+    
+    /* Premium shadows */
+    --shadow-glass: 0 8px 32px -8px hsl(0 0% 0% / 0.1);
+    --shadow-premium: 0 20px 60px -15px hsl(var(--safari-green) / 0.2);
+    --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.08);
 
     --sidebar-background: 0 0% 98%;
 

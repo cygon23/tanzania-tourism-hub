@@ -317,10 +317,10 @@ export default function Auth() {
               <div className="bg-gradient-to-r from-safari/10 to-ocean/10 p-4 rounded-xl border border-white/10">
                 <p className="font-medium text-sm mb-3 text-foreground">🔑 Demo Credentials</p>
                 <div className="grid grid-cols-1 gap-2 text-xs">
-                  {/* <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                  <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
                     <span className="text-muted-foreground">Admin Access:</span>
                     <span className="font-mono text-safari">admin@tanzaniahub.com</span>
-                  </div>  */}
+                  </div>
                   <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
                     <span className="text-muted-foreground">User Access:</span>
                     <span className="font-mono text-ocean">user@example.com</span>
