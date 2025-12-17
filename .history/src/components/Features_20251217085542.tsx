@@ -1,0 +1,493 @@
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { 
+  Compass, Globe2, Video, Sparkles, Map, Heart, 
+  Camera, Mountain, Palmtree, Users, Star, LucideIcon
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+interface Service {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  gradient: string;
+  features: string[];
+  size: 'large' | 'medium' | 'small';
+  position: string;
+}
+
+const services: Service[] = [
+  {
+    icon: Mountain,
+    title: "Virtual Safaris",
+    description: "Immersive 360° wildlife experiences from the comfort of home",
+    gradient: "from-safari via-sunset to-safari",
+    features: ["4K Quality", "360° View", "AI Narration"],
+    size: 'large',
+    position: 'col-span-2 row-span-2'
+  },
+  {
+    icon: Video,
+    title: "Cultural Tours",
+    description: "Authentic Tanzanian heritage and traditions brought to life",
+    gradient: "from-ocean via-ocean-light to-ocean",
+    features: ["Live Guides", "Interactive"],
+    size: 'medium',
+    position: 'col-span-1 row-span-2'
+  },
+  {
+    icon: Compass,
+    title: "AI Travel Assistant",
+    description: "Personalized trip planning powered by advanced AI",
+    gradient: "from-sunset via-safari to-sunset",
+    features: ["24/7 Support", "Custom Plans"],
+    size: 'medium',
+    position: 'col-span-1 row-span-1'
+  },
+  {
+    icon: Map,
+    title: "Destination Explorer",
+    description: "Discover Tanzania's hidden gems",
+    gradient: "from-ocean via-safari to-ocean",
+    features: ["50+ Locations"],
+    size: 'small',
+    position: 'col-span-1 row-span-1'
+  },
+  {
+    icon: Camera,
+    title: "Creator Platform",
+    description: "Empower local guides globally",
+    gradient: "from-safari via-ocean to-safari",
+    features: ["Monetization", "Studio Tools"],
+    size: 'medium',
+    position: 'col-span-1 row-span-1'
+  },
+  {
+    icon: Palmtree,
+    title: "Heritage Stories",
+    description: "Preserved cultural narratives",
+    gradient: "from-sunset via-ocean to-sunset",
+    features: ["Oral History"],
+    size: 'small',
+    position: 'col-span-1 row-span-1'
+  }
+];
+
+interface Stat {
+  icon: LucideIcon;
+  value: string;
+  label: string;
+  gradient: string;
+}
+
+const stats: Stat[] = [
+  { icon: Globe2, value: "50+", label: "Virtual Tours", gradient: "from-safari to-sunset" },
+  { icon: Users, value: "10K+", label: "Global Users", gradient: "from-ocean to-ocean-light" },
+  { icon: Heart, value: "150+", label: "Local Creators", gradient: "from-sunset to-safari" },
+  { icon: Star, value: "4.9", label: "User Rating", gradient: "from-ocean to-safari" }
+];
+
+export default function Features() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
+  const floatingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Add custom CSS animations for SVG elements
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float-slow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+      @keyframes pulse-slow {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.1); }
+      }
+      .animate-float-slow {
+        animation: float-slow 4s ease-in-out infinite;
+      }
+      .animate-float {
+        animation: float-slow 3s ease-in-out infinite;
+      }
+      .animate-pulse-slow {
+        animation: pulse-slow 3s ease-in-out infinite;
+      }
+    `;
+    document.head.appendChild(style);
+
+    const ctx = gsap.context(() => {
+      if (cardsRef.current.length > 0) {
+        cardsRef.current.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { 
+              opacity: 0, 
+              y: 100,
+              rotateX: 45,
+              scale: 0.8
+            },
+            {
+              opacity: 1,
+              y: 0,
+              rotateX: 0,
+              scale: 1,
+              duration: 1.2,
+              delay: index * 0.1,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: servicesRef.current,
+                start: "top 70%",
+                toggleActions: "play none none reverse",
+              },
+            }
+          );
+
+          gsap.to(card, {
+            y: -15,
+            duration: 2 + (index * 0.3),
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            delay: index * 0.2
+          });
+        });
+      }
+
+      if (floatingRef.current) {
+        const elements = floatingRef.current.querySelectorAll('.float-element');
+        elements.forEach((el, i) => {
+          gsap.to(el, {
+            y: -30,
+            x: Math.sin(i) * 20,
+            rotation: Math.cos(i) * 10,
+            duration: 3 + (i * 0.5),
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            delay: i * 0.3
+          });
+        });
+      }
+
+      if (statsRef.current) {
+        gsap.fromTo(
+          statsRef.current.children,
+          { opacity: 0, scale: 0, rotateY: 180 },
+          {
+            opacity: 1,
+            scale: 1,
+            rotateY: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+              trigger: statsRef.current,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => {
+      ctx.revert();
+      // Cleanup injected styles
+      const styles = document.querySelectorAll('style');
+      styles.forEach(style => {
+        if (style.textContent?.includes('animate-float-slow')) {
+          style.remove();
+        }
+      });
+    };
+  }, []);
+
+  const addToRefs = (el: HTMLDivElement | null) => {
+    if (el && !cardsRef.current.includes(el)) {
+      cardsRef.current.push(el);
+    }
+  };
+
+  return (
+    <section 
+      id="services"
+      ref={sectionRef} 
+      className="relative overflow-hidden py-32"
+      style={{
+        background: 'linear-gradient(180deg, #0a0e1a 0%, #0d1220 50%, #0a0e1a 100%)',
+        perspective: '1000px'
+      }}
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-safari/5 rounded-full blur-[150px] animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-[700px] h-[700px] bg-ocean/5 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sunset/3 rounded-full blur-[120px]" />
+      </div>
+
+      <div ref={floatingRef} className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="float-element absolute top-20 left-[10%] w-32 h-32 rounded-full border-2 border-safari/20 backdrop-blur-sm" />
+        <div className="float-element absolute top-40 right-[15%] w-24 h-24 rounded-2xl border-2 border-ocean/20 backdrop-blur-sm rotate-45" />
+        <div className="float-element absolute bottom-32 left-[20%] w-40 h-40 rounded-full border-2 border-sunset/20 backdrop-blur-sm" />
+        <div className="float-element absolute bottom-20 right-[25%] w-28 h-28 rounded-2xl border-2 border-safari/20 backdrop-blur-sm -rotate-12" />
+      </div>
+
+      <div 
+        className="absolute inset-0 opacity-[0.015]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(249,115,22,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.4) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+          transform: 'rotateX(45deg) scale(2)',
+          transformOrigin: 'center center'
+        }}
+      />
+
+      <div className="container mx-auto px-6 lg:px-10 relative z-10">
+        
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 mb-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm shadow-2xl shadow-safari/10">
+            <Sparkles className="w-4 h-4 text-safari animate-pulse" />
+            <span className="text-white/60 text-sm font-medium tracking-wide">What We Offer</span>
+          </div>
+          
+          <h2 
+            className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.05] tracking-tight max-w-4xl mx-auto transform-gpu"
+            style={{
+              background: 'linear-gradient(135deg, #FCD34D 0%, #F97316 40%, #0891B2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Virtual Tourism
+            <br />
+            Reimagined
+          </h2>
+          
+          <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed">
+            Experience Tanzania's wonders through cutting-edge AI and immersive technology
+          </p>
+        </div>
+
+        <div 
+          ref={servicesRef} 
+          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[280px] gap-6 mb-32"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {services.map((service, index) => {
+            const IconComponent = service.icon;
+            const isLarge = service.size === 'large';
+            const isMedium = service.size === 'medium';
+            
+            return (
+              <div
+                key={index}
+                ref={addToRefs}
+                className={`group relative ${service.position}`}
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <div className={`absolute -inset-1 bg-gradient-to-br ${service.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-700 transform group-hover:scale-110`} 
+                  style={{ transform: 'translateZ(-20px)' }}
+                />
+                <div className={`absolute -inset-2 bg-gradient-to-br ${service.gradient} rounded-3xl blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700`} 
+                  style={{ transform: 'translateZ(-40px)' }}
+                />
+                
+                <div 
+                  className="relative h-full p-6 md:p-8 rounded-3xl border transition-all duration-700 group-hover:border-white/30 overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(13,18,32,0.9) 0%, rgba(10,14,26,0.95) 100%)',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(10px)',
+                    transformStyle: 'preserve-3d',
+                    transform: 'translateZ(0)',
+                  }}
+                >
+                  <div 
+                    className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-700"
+                    style={{
+                      background: `radial-gradient(circle at 20% 50%, ${service.gradient.includes('safari') ? 'rgba(249,115,22,0.1)' : 'rgba(8,145,178,0.1)'} 0%, transparent 50%),
+                                   radial-gradient(circle at 80% 50%, ${service.gradient.includes('ocean') ? 'rgba(8,145,178,0.1)' : 'rgba(249,115,22,0.1)'} 0%, transparent 50%)`
+                    }}
+                  />
+
+                  <div 
+                    className={`${isLarge ? 'w-20 h-20 mb-6' : 'w-14 h-14 mb-4'} rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative`}
+                    style={{ 
+                      transformStyle: 'preserve-3d',
+                      transform: 'translateZ(30px)'
+                    }}
+                  >
+                    <IconComponent className={`${isLarge ? 'w-10 h-10' : 'w-7 h-7'} text-white`} />
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent" />
+                  </div>
+
+                  <div className="relative z-10 h-full flex flex-col">
+                    <h3 
+                      className={`${isLarge ? 'text-3xl mb-4' : isMedium ? 'text-2xl mb-3' : 'text-xl mb-2'} font-display font-bold text-white group-hover:text-safari transition-colors duration-300`}
+                      style={{ transform: 'translateZ(20px)' }}
+                    >
+                      {service.title}
+                    </h3>
+                    
+                    <p 
+                      className={`text-white/60 ${isLarge ? 'text-base mb-6' : 'text-sm mb-4'} leading-relaxed`}
+                      style={{ transform: 'translateZ(10px)' }}
+                    >
+                      {service.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mb-auto">
+                      {service.features.map((feature, i) => (
+                        <span 
+                          key={i}
+                          className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50 text-xs font-medium backdrop-blur-sm group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300"
+                          style={{ transform: `translateZ(${5 + i * 2}px)` }}
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Animated vectors for specific services */}
+                    {service.title === "Virtual Safaris" && (
+                      <div className="mt-auto pt-6 opacity-30 group-hover:opacity-50 transition-opacity duration-500">
+                        <svg viewBox="0 0 200 80" className="w-full h-auto">
+                          {/* Safari landscape with animals */}
+                          <g className="animate-float-slow">
+                            {/* Mountains */}
+                            <path d="M0,60 L30,30 L60,50 L90,20 L120,45 L150,25 L180,50 L200,40 L200,80 L0,80 Z" 
+                              fill="url(#safariGradient)" opacity="0.3"/>
+                            {/* Giraffe */}
+                            <g className="animate-float" style={{ animationDelay: '0.5s' }}>
+                              <rect x="140" y="35" width="3" height="25" fill="#F97316" opacity="0.6"/>
+                              <circle cx="141.5" cy="33" r="4" fill="#F97316" opacity="0.6"/>
+                            </g>
+                            {/* Elephant */}
+                            <g className="animate-float" style={{ animationDelay: '1s' }}>
+                              <ellipse cx="80" cy="52" rx="8" ry="6" fill="#F97316" opacity="0.5"/>
+                              <path d="M72,52 Q68,58 70,62" stroke="#F97316" strokeWidth="2" fill="none" opacity="0.5"/>
+                            </g>
+                            {/* Birds */}
+                            <g className="animate-float" style={{ animationDelay: '0.2s' }}>
+                              <path d="M50,20 Q52,18 54,20" stroke="#FCD34D" strokeWidth="1" fill="none" opacity="0.6"/>
+                              <path d="M60,15 Q62,13 64,15" stroke="#FCD34D" strokeWidth="1" fill="none" opacity="0.6"/>
+                            </g>
+                          </g>
+                          <defs>
+                            <linearGradient id="safariGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#F97316" stopOpacity="0.4"/>
+                              <stop offset="100%" stopColor="#DC2626" stopOpacity="0.2"/>
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+                    )}
+
+                    {service.title === "Cultural Tours" && (
+                      <div className="mt-auto pt-6 opacity-30 group-hover:opacity-50 transition-opacity duration-500">
+                        <svg viewBox="0 0 200 80" className="w-full h-auto">
+                          {/* Cultural elements */}
+                          <g>
+                            {/* Traditional huts */}
+                            <g className="animate-float-slow">
+                              <circle cx="40" cy="55" r="15" fill="none" stroke="#0891B2" strokeWidth="2" opacity="0.4"/>
+                              <path d="M40,40 L50,55 L30,55 Z" fill="#0891B2" opacity="0.3"/>
+                            </g>
+                            <g className="animate-float-slow" style={{ animationDelay: '0.3s' }}>
+                              <circle cx="80" cy="50" r="18" fill="none" stroke="#0891B2" strokeWidth="2" opacity="0.4"/>
+                              <path d="M80,32 L95,50 L65,50 Z" fill="#0891B2" opacity="0.3"/>
+                            </g>
+                            <g className="animate-float-slow" style={{ animationDelay: '0.6s' }}>
+                              <circle cx="120" cy="55" r="15" fill="none" stroke="#0891B2" strokeWidth="2" opacity="0.4"/>
+                              <path d="M120,40 L130,55 L110,55 Z" fill="#0891B2" opacity="0.3"/>
+                            </g>
+                            {/* Dancing figures */}
+                            <g className="animate-pulse-slow">
+                              <circle cx="160" cy="45" r="4" fill="#67E8F9" opacity="0.5"/>
+                              <line x1="160" y1="49" x2="160" y2="60" stroke="#67E8F9" strokeWidth="2" opacity="0.5"/>
+                              <line x1="160" y1="52" x2="155" y2="58" stroke="#67E8F9" strokeWidth="2" opacity="0.5"/>
+                              <line x1="160" y1="52" x2="165" y2="58" stroke="#67E8F9" strokeWidth="2" opacity="0.5"/>
+                            </g>
+                            {/* Decorative patterns */}
+                            <circle cx="20" cy="25" r="3" fill="#67E8F9" opacity="0.3" className="animate-pulse-slow"/>
+                            <circle cx="180" cy="30" r="2" fill="#67E8F9" opacity="0.3" className="animate-pulse-slow" style={{ animationDelay: '0.5s' }}/>
+                          </g>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  <div 
+                    className="absolute top-0 right-0 w-32 h-32 rounded-full bg-gradient-to-br from-white/5 to-transparent blur-2xl group-hover:scale-150 transition-transform duration-700"
+                    style={{ transform: 'translateZ(-10px)' }}
+                  />
+                </div>
+
+                <div 
+                  className="absolute inset-0 rounded-3xl bg-black/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                  style={{ transform: 'translateZ(-60px) translateY(20px)' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 mb-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm shadow-2xl shadow-ocean/10">
+            <Star className="w-4 h-4 text-ocean animate-pulse" />
+            <span className="text-white/60 text-sm font-medium tracking-wide">By The Numbers</span>
+          </div>
+        </div>
+
+        <div ref={statsRef} className="grid grid-cols-2 lg:grid-cols-4 gap-6" style={{ perspective: '1000px' }}>
+          {stats.map((stat, index) => {
+            const IconComponent = stat.icon;
+            return (
+              <div 
+                key={index}
+                className="group relative"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <div className={`absolute -inset-1 bg-gradient-to-br ${stat.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                
+                <div 
+                  className="relative p-8 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-500 text-center backdrop-blur-sm group-hover:-translate-y-2"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(13,18,32,0.8) 0%, rgba(10,14,26,0.9) 100%)',
+                    transformStyle: 'preserve-3d',
+                  }}
+                >
+                  <div 
+                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-2xl`}
+                    style={{ transform: 'translateZ(20px)' }}
+                  >
+                    <IconComponent className="w-7 h-7 text-white" />
+                  </div>
+                  <div 
+                    className="text-4xl font-display font-bold mb-2"
+                    style={{
+                      background: `linear-gradient(135deg, ${stat.gradient.includes('safari') ? '#F97316' : '#0891B2'} 0%, ${stat.gradient.includes('ocean') ? '#67E8F9' : '#FCD34D'} 100%)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      transform: 'translateZ(15px)'
+                    }}
+                  >
+                    {stat.value}
+                  </div>
+                  <div className="text-white/50 text-sm font-medium" style={{ transform: 'translateZ(10px)' }}>
+                    {stat.label}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+    </section>
+  );
+}

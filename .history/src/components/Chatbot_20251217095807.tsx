@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Compass, Map, Calendar, Info, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { MessageCircle, X, Send, Compass, Map, Calendar, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -11,24 +11,12 @@ const quickActions = [
   { icon: Info, label: "About Kilisee", value: "Tell me about Kilisee tourism services" },
 ];
 
-interface SearchResult {
-  title: string;
-  url: string;
-  content: string;
-  images?: string[];
-}
-
 const KiliseeBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Array<{ 
-    text: string; 
-    sender: "user" | "bot";
-    searchResults?: SearchResult[];
-    images?: string[];
-  }>>([
+  const [messages, setMessages] = useState<Array<{ text: string; sender: "user" | "bot" }>>([
     {
-      text: "Hello! 🌍 Welcome to Kilisee Tourism. I'm your expert travel assistant ready to help you discover amazing destinations, plan unforgettable adventures, and answer all your tourism questions. I can also search the web for current information, images, and recommendations. How can I assist you today?",
+      text: "Hello! 🌍 Welcome to Kilisee Tourism. I'm your expert travel assistant ready to help you discover amazing destinations, plan unforgettable adventures, and answer all your tourism questions. How can I assist you today?",
       sender: "bot",
     },
   ]);
@@ -61,37 +49,6 @@ const KiliseeBot = () => {
       .trim();
   };
 
-  const callTavilySearch = async (query: string) => {
-    try {
-      // Call our serverless function instead of Tavily directly
-      const response = await fetch("/api/tavily-search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: query
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Search API error:", errorData);
-        throw new Error(errorData.error || "Search failed");
-      }
-
-      const data = await response.json();
-      return {
-        results: data.results || [],
-        images: data.images || [],
-        answer: data.answer || ""
-      };
-    } catch (error) {
-      console.error("Tavily search error:", error);
-      return null;
-    }
-  };
-
   const handleSendMessage = async (text?: string) => {
     const messageText = text || message;
     if (!messageText.trim() || isTyping) return;
@@ -116,33 +73,6 @@ COMMUNICATION STYLE:
 - ALWAYS end your response by asking: "Would you like more details, or is this helpful for now?"
 - If the user indicates they need more information, provide comprehensive details
 - If they're satisfied, move on to ask if there's anything else they'd like to know
-
-WEB SEARCH CAPABILITY:
-CRITICAL: When user asks for ANY of these, you MUST trigger a search:
-- Images, photos, or pictures ("show me", "what does X look like")
-- Current prices, rates, or costs
-- Specific hotels, lodges, or accommodations by name
-- Reviews or ratings
-- Recent news or updates
-- "Find", "search", "look up" requests
-- Availability or booking information
-- Specific destinations with details
-
-SEARCH FORMAT - Use EXACTLY this format (no extra text before or after):
-TAVILY_SEARCH:[your search query here]
-
-Examples:
-User: "Show me lodges in Zanzibar"
-CORRECT Response: TAVILY_SEARCH:luxury lodges Zanzibar with reviews prices
-
-User: "What does Mount Kilimanjaro look like?"
-CORRECT Response: TAVILY_SEARCH:Mount Kilimanjaro photos images
-
-User: "Find hotels in Serengeti"
-CORRECT Response: TAVILY_SEARCH:Serengeti safari hotels accommodation
-
-DO NOT add any other text when searching. ONLY the TAVILY_SEARCH line.
-After I provide search results, then you format them nicely.
 
 EXPERTISE AREAS (TOURISM ONLY):
 1. Destination Recommendations - beaches, mountains, cities, cultural sites
@@ -172,6 +102,26 @@ STRICT BOUNDARIES:
 If asked about non-tourism topics, politely redirect:
 "I'm specialized in tourism and travel assistance. That topic falls outside my expertise area. However, I'd love to help you plan an amazing trip or answer any tourism-related questions! Where would you like to travel? 🌍"
 
+RESPONSE GUIDELINES:
+1. For destination questions: Share highlights, best features, recommended duration
+2. For activity questions: Suggest options based on interests (adventure, relaxation, culture)
+3. For planning questions: Provide structured, practical advice
+4. For "best time" questions: Consider weather, crowds, costs, and special events
+5. When uncertain about specific details (exact prices, current availability): Suggest checking with local tour operators or official tourism boards
+6. ALWAYS ask if they want more details or if the current information is sufficient
+7. Adjust detail level based on their response - brief if they say "enough", detailed if they want "more"
+
+SAMPLE RESPONSES:
+
+User: "Where should I travel for beaches?"
+Bot: "There are stunning beach destinations worldwide! The Maldives offers pristine white sand and crystal waters, Bali combines beaches with culture, and the Caribbean islands provide diverse experiences from relaxation to water sports. Each offers unique vibes depending on what you're seeking. Would you like more details about any of these, or is this helpful for now?"
+
+User: "Tell me about safari tours"
+Bot: "Safari tours are incredible wildlife adventures! Tanzania's Serengeti and Kenya's Masai Mara offer the Big Five and great migration, while South Africa's Kruger provides luxury lodges and diverse ecosystems. Most safaris run 3-7 days with game drives, expert guides, and close wildlife encounters. Would you like more details about specific safari destinations, or is this helpful for now?"
+
+User: "What's the best time to visit Europe?"
+Bot: "Late spring (May-June) and early fall (September-October) are ideal for Europe! You'll enjoy pleasant weather, fewer crowds than summer, and better prices. Summer (July-August) is peak season with festivals but more tourists. Winter offers Christmas markets and skiing but shorter days. Would you like more details about specific countries or seasons, or is this helpful for now?"
+
 Previous conversation:
 ${conversationHistory}
 
@@ -180,9 +130,9 @@ User: ${messageText}
 Remember: 
 - You are ONLY a tourism expert - redirect all non-tourism questions politely
 - Be enthusiastic about travel and genuinely helpful
-- Use TAVILY_SEARCH when user needs current info, images, or specific recommendations
 - Keep responses concise unless user wants more
-- ALWAYS end with "Would you like more details, or is this helpful for now?"`;
+- ALWAYS end with "Would you like more details, or is this helpful for now?"
+- Adapt detail level based on their feedback`;
 
       const apiUrl = `https://CreepyTech-creepy-ai.hf.space/ai/logic?q=${encodeURIComponent(
         systemPrompt
@@ -199,77 +149,7 @@ Remember:
 
       if (data && data.result) {
         const cleanText = cleanMarkdown(data.result);
-        
-        // Check if AI wants to search (more flexible pattern matching)
-        const searchPattern = /TAVILY[_\s]*SEARCH\s*:\s*(.+?)(?:\n|$)/i;
-        const searchMatch = cleanText.match(searchPattern);
-        
-        if (searchMatch) {
-          const searchQuery = searchMatch[1].trim();
-          
-          // Show searching message
-          setMessages((prev) => [...prev, { 
-            text: `🔍 Searching for "${searchQuery}"...`, 
-            sender: "bot" 
-          }]);
-          
-          // Call Tavily
-          const searchData = await callTavilySearch(searchQuery);
-          
-          if (searchData && searchData.results && searchData.results.length > 0) {
-            // Format search results for AI to present
-            const resultsText = searchData.results
-              .slice(0, 3)
-              .map((r: any, i: number) => `${i + 1}. ${r.title}\nSource: ${r.url}\n${r.content.substring(0, 200)}...`)
-              .join("\n\n");
-            
-            const formattingPrompt = `You are a tourism expert. Based on the web search results below, provide a helpful, natural response to the user's question: "${messageText}"
-
-Web Search Results:
-${resultsText}
-
-${searchData.answer ? `Summary: ${searchData.answer}` : ''}
-
-Instructions:
-- Write naturally as if you're sharing recommendations with a friend
-- Mention 2-3 key findings from the results
-- Reference that this is current information from the web
-- End with "Would you like more details about any of these, or is this helpful for now?"
-- Keep it concise (3-4 sentences)`;
-
-            const formattingUrl = `https://CreepyTech-creepy-ai.hf.space/ai/logic?q=${encodeURIComponent(
-              formattingPrompt
-            )}&logic=chat`;
-
-            const formattedResponse = await fetch(formattingUrl);
-            const formattedData = await formattedResponse.json();
-            
-            if (formattedData && formattedData.result) {
-              // Remove the searching message and add final response with results
-              setMessages((prev) => {
-                const updated = prev.slice(0, -1); // Remove searching message
-                return [...updated, { 
-                  text: cleanMarkdown(formattedData.result),
-                  sender: "bot",
-                  searchResults: searchData.results.slice(0, 3),
-                  images: searchData.images && searchData.images.length > 0 ? searchData.images.slice(0, 4) : undefined
-                }];
-              });
-            }
-          } else {
-            // Search failed or no results
-            setMessages((prev) => {
-              const updated = prev.slice(0, -1);
-              return [...updated, { 
-                text: "I tried searching for current information but couldn't retrieve results at the moment. Let me share what I know from my tourism expertise! For the most current details on lodges, prices, and availability, I recommend checking booking platforms like Booking.com or TripAdvisor. Would you like general information about Zanzibar accommodations instead?",
-                sender: "bot"
-              }];
-            });
-          }
-        } else {
-          // Normal response without search
-          setMessages((prev) => [...prev, { text: cleanText, sender: "bot" }]);
-        }
+        setMessages((prev) => [...prev, { text: cleanText, sender: "bot" }]);
       } else {
         throw new Error("Invalid response format");
       }
@@ -289,18 +169,177 @@ Instructions:
 
   return (
     <>
-      {/* Simple Chat Button */}
+      {/* Animated Chat Button */}
       <AnimatePresence>
         {!isOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            onClick={() => setIsOpen(true)}
-            className='fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-[#2E7D32] to-[#1B5E20] hover:from-[#388E3C] hover:to-[#2E7D32] shadow-lg z-40 transition-all duration-300 flex items-center justify-center'>
-            <MessageCircle className="w-6 h-6 text-white" />
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FF6B35] rounded-full animate-pulse"></div>
-          </motion.button>
+          <motion.div
+            className='fixed bottom-6 right-6 z-50'
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0, rotate: 180 }}>
+            <div className='relative'>
+              {!isMobile && (
+                <>
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div
+                      key={`ring-${i}`}
+                      className='absolute inset-0 rounded-full border-2 border-blue-500'
+                      style={{
+                        filter: "blur(1px)",
+                      }}
+                      animate={{
+                        scale: [1, 2, 2.8],
+                        opacity: [0.8, 0.4, 0],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        delay: i * 0.6,
+                        ease: "easeOut",
+                      }}
+                    />
+                  ))}
+
+                  {[...Array(6)].map((_, i) => (
+                    <motion.div
+                      key={`orbit-${i}`}
+                      className='absolute'
+                      animate={{
+                        rotate: [0, 360],
+                      }}
+                      transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      style={{
+                        left: "50%",
+                        top: "50%",
+                      }}>
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.5, 1],
+                          opacity: [0.6, 1, 0.6],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.3,
+                        }}
+                        style={{
+                          x: Math.cos((i / 6) * Math.PI * 2) * 45 - 4,
+                          y: Math.sin((i / 6) * Math.PI * 2) * 45 - 6,
+                        }}>
+                        <Compass className='w-4 h-4 text-blue-400' />
+                      </motion.div>
+                    </motion.div>
+                  ))}
+                </>
+              )}
+
+              <motion.button
+                whileHover={{ scale: isMobile ? 1 : 1.15 }}
+                whileTap={{ scale: 0.85 }}
+                onClick={() => setIsOpen(true)}
+                className={`relative ${isMobile ? 'w-14 h-14' : 'w-20 h-20'} rounded-full overflow-hidden group bg-gradient-to-br from-blue-500 to-cyan-500 shadow-[0_8px_32px_rgba(59,130,246,0.5),0_0_60px_rgba(59,130,246,0.3)]`}>
+                {!isMobile && (
+                  <motion.div
+                    className='absolute inset-0 bg-gradient-to-br from-cyan-400/40 to-transparent'
+                    animate={{
+                      borderRadius: [
+                        "60% 40% 30% 70% / 60% 30% 70% 40%",
+                        "30% 60% 70% 40% / 50% 60% 30% 60%",
+                        "60% 40% 30% 70% / 60% 30% 70% 40%",
+                      ],
+                      rotate: [0, 180, 360],
+                    }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                )}
+
+                <div className='relative z-10 flex items-center justify-center h-full'>
+                  {!isMobile ? (
+                    <motion.div
+                      animate={{
+                        y: [0, -5, 0],
+                        rotate: [0, 5, -5, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}>
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.1, 1],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}>
+                        <MessageCircle
+                          className='w-9 h-9 text-white'
+                          strokeWidth={2.5}
+                        />
+                      </motion.div>
+                    </motion.div>
+                  ) : (
+                    <MessageCircle
+                      className='w-6 h-6 text-white'
+                      strokeWidth={2.5}
+                    />
+                  )}
+                </div>
+
+                {!isMobile && (
+                  <motion.div
+                    className='absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent'
+                    animate={{
+                      x: ["-100%", "200%"],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                )}
+
+                {!isMobile ? (
+                  <motion.div
+                    className='absolute -top-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center shadow-[0_0_20px_rgba(251,146,60,0.8)]'
+                    animate={{
+                      scale: [1, 1.3, 1],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                    }}>
+                    <motion.span
+                      className='text-sm font-bold text-white'
+                      animate={{
+                        rotate: [0, 10, -10, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                      }}>
+                      !
+                    </motion.span>
+                  </motion.div>
+                ) : (
+                  <div className='absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center'>
+                    <span className='text-xs font-bold text-white'>!</span>
+                  </div>
+                )}
+              </motion.button>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -313,10 +352,10 @@ Instructions:
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
             transition={{ type: "spring", damping: 20 }}
             className='fixed bottom-6 right-6 z-50 w-[90vw] max-w-md'>
-            <div className='bg-card rounded-3xl shadow-2xl overflow-hidden border-2 border-[#2E7D32]/20'>
+            <div className='bg-card rounded-3xl shadow-2xl overflow-hidden border-2 border-blue-500/20'>
               {/* Header */}
               <motion.div
-                className='relative bg-gradient-to-br from-[#2E7D32] to-[#1B5E20] p-6 overflow-hidden'
+                className='relative bg-gradient-to-br from-blue-500 to-cyan-500 p-6 overflow-hidden'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}>
                 <div className='absolute inset-0 opacity-20'>
@@ -391,74 +430,19 @@ Instructions:
                     initial={{ opacity: 0, y: 20, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ delay: idx * 0.1 }}
-                    className={`flex flex-col ${
-                      msg.sender === "user" ? "items-end" : "items-start"
+                    className={`flex ${
+                      msg.sender === "user" ? "justify-end" : "justify-start"
                     }`}>
                     <div
                       className={`max-w-[80%] rounded-2xl p-4 ${
                         msg.sender === "user"
-                          ? "bg-gradient-to-br from-[#2E7D32] to-[#1B5E20] text-white shadow-lg"
+                          ? "bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg"
                           : "bg-card text-foreground shadow-md border border-border"
                       }`}>
                       <p className='text-sm leading-relaxed whitespace-pre-wrap'>
                         {msg.text}
                       </p>
                     </div>
-
-                    {/* Display Images if available */}
-                    {msg.images && msg.images.length > 0 && (
-                      <div className='mt-2 grid grid-cols-2 gap-2 max-w-[80%]'>
-                        {msg.images.map((imgUrl, imgIdx) => (
-                          <motion.a
-                            key={imgIdx}
-                            href={imgUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className='relative rounded-lg overflow-hidden group cursor-pointer'
-                            whileHover={{ scale: 1.05 }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: imgIdx * 0.1 }}>
-                            <img 
-                              src={imgUrl} 
-                              alt={`Result ${imgIdx + 1}`}
-                              className='w-full h-24 object-cover'
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                              }}
-                            />
-                            <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center'>
-                              <ImageIcon className='w-5 h-5 text-white' />
-                            </div>
-                          </motion.a>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Display Search Results if available */}
-                    {msg.searchResults && msg.searchResults.length > 0 && (
-                      <div className='mt-2 space-y-2 max-w-[80%]'>
-                        <p className='text-xs text-muted-foreground font-medium flex items-center gap-1'>
-                          <ExternalLink className='w-3 h-3' />
-                          Sources:
-                        </p>
-                        {msg.searchResults.map((result, resIdx) => (
-                          <motion.a
-                            key={resIdx}
-                            href={result.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className='block p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors border border-border text-xs'
-                            whileHover={{ x: 5 }}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: resIdx * 0.1 }}>
-                            <p className='font-medium text-foreground line-clamp-1'>{result.title}</p>
-                            <p className='text-muted-foreground text-[10px] line-clamp-1 mt-0.5'>{result.url}</p>
-                          </motion.a>
-                        ))}
-                      </div>
-                    )}
                   </motion.div>
                 ))}
                 {isTyping && (
@@ -468,12 +452,12 @@ Instructions:
                     className='flex justify-start'>
                     <div className='bg-card text-foreground shadow-md border border-border rounded-2xl p-4'>
                       <div className='flex gap-1.5'>
-                        <div className='w-2 h-2 bg-[#2E7D32] rounded-full animate-bounce'></div>
+                        <div className='w-2 h-2 bg-blue-500 rounded-full animate-bounce'></div>
                         <div
-                          className='w-2 h-2 bg-[#2E7D32] rounded-full animate-bounce'
+                          className='w-2 h-2 bg-blue-500 rounded-full animate-bounce'
                           style={{ animationDelay: "0.15s" }}></div>
                         <div
-                          className='w-2 h-2 bg-[#2E7D32] rounded-full animate-bounce'
+                          className='w-2 h-2 bg-blue-500 rounded-full animate-bounce'
                           style={{ animationDelay: "0.3s" }}></div>
                       </div>
                     </div>
@@ -495,8 +479,8 @@ Instructions:
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleSendMessage(action.value)}
                       disabled={isTyping}
-                      className='flex items-center gap-2 p-3 rounded-xl bg-card hover:bg-[#2E7D32]/10 transition-colors border border-border group disabled:opacity-50'>
-                      <action.icon className='w-4 h-4 text-[#2E7D32] group-hover:scale-110 transition-transform' />
+                      className='flex items-center gap-2 p-3 rounded-xl bg-card hover:bg-blue-500/10 transition-colors border border-border group disabled:opacity-50'>
+                      <action.icon className='w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform' />
                       <span className='text-xs font-medium text-foreground'>
                         {action.label}
                       </span>
@@ -516,7 +500,7 @@ Instructions:
                     }
                     placeholder='Ask about travel destinations...'
                     disabled={isTyping}
-                    className='flex-1 rounded-xl border-border focus:border-[#2E7D32] transition-colors'
+                    className='flex-1 rounded-xl border-border focus:border-blue-500 transition-colors'
                   />
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -525,7 +509,7 @@ Instructions:
                       onClick={() => handleSendMessage()}
                       disabled={!message.trim() || isTyping}
                       size='icon'
-                      className='rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FF8C42] hover:from-[#FF8C42] hover:to-[#FF6B35] shadow-lg'>
+                      className='rounded-xl bg-gradient-to-br from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-lg'>
                       <Send className='w-4 h-4' />
                     </Button>
                   </motion.div>

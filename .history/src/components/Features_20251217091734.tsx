@@ -85,7 +85,7 @@ interface Stat {
 const stats: Stat[] = [
   { icon: Globe2, value: "50+", label: "Virtual Tours", gradient: "from-safari to-sunset" },
   { icon: Users, value: "200+", label: "Global Users", gradient: "from-ocean to-ocean-light" },
-  { icon: Heart, value: "100+", label: "Local Creators", gradient: "from-sunset to-safari" },
+  { icon: Heart, value: "1500+", label: "Local Creators", gradient: "from-sunset to-safari" },
   { icon: Star, value: "4.9", label: "User Rating", gradient: "from-ocean to-safari" }
 ];
 

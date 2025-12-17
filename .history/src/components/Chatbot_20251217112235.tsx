@@ -63,21 +63,23 @@ const KiliseeBot = () => {
 
   const callTavilySearch = async (query: string) => {
     try {
-      // Call our serverless function instead of Tavily directly
-      const response = await fetch("/api/tavily-search", {
+      const response = await fetch("https://api.tavily.com/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          query: query
+          api_key: "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", // User needs to replace this
+          query: query,
+          search_depth: "advanced",
+          include_images: true,
+          include_answer: true,
+          max_results: 5
         })
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Search API error:", errorData);
-        throw new Error(errorData.error || "Search failed");
+        throw new Error("Tavily search failed");
       }
 
       const data = await response.json();

@@ -63,21 +63,23 @@ const KiliseeBot = () => {
 
   const callTavilySearch = async (query: string) => {
     try {
-      // Call our serverless function instead of Tavily directly
-      const response = await fetch("/api/tavily-search", {
+      const response = await fetch("https://api.tavily.com/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          query: query
+          api_key: "tvly-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", // User needs to replace this
+          query: query,
+          search_depth: "advanced",
+          include_images: true,
+          include_answer: true,
+          max_results: 5
         })
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Search API error:", errorData);
-        throw new Error(errorData.error || "Search failed");
+        throw new Error("Tavily search failed");
       }
 
       const data = await response.json();
@@ -118,31 +120,23 @@ COMMUNICATION STYLE:
 - If they're satisfied, move on to ask if there's anything else they'd like to know
 
 WEB SEARCH CAPABILITY:
-CRITICAL: When user asks for ANY of these, you MUST trigger a search:
-- Images, photos, or pictures ("show me", "what does X look like")
-- Current prices, rates, or costs
-- Specific hotels, lodges, or accommodations by name
-- Reviews or ratings
-- Recent news or updates
-- "Find", "search", "look up" requests
-- Availability or booking information
-- Specific destinations with details
+When user asks for:
+- Current information (hotel prices, availability, latest news)
+- Images or photos of destinations
+- Specific recommendations with sources
+- "Show me", "find", "search for" type requests
+- Recent tourism updates or events
 
-SEARCH FORMAT - Use EXACTLY this format (no extra text before or after):
-TAVILY_SEARCH:[your search query here]
+YOU MUST respond with: TAVILY_SEARCH:[clear search query]
 
-Examples:
-User: "Show me lodges in Zanzibar"
-CORRECT Response: TAVILY_SEARCH:luxury lodges Zanzibar with reviews prices
+Example:
+User: "Show me beautiful beaches in Zanzibar"
+You: "TAVILY_SEARCH:best beaches in Zanzibar with images"
 
-User: "What does Mount Kilimanjaro look like?"
-CORRECT Response: TAVILY_SEARCH:Mount Kilimanjaro photos images
+User: "What are the current hotel prices in Serengeti?"
+You: "TAVILY_SEARCH:Serengeti hotel prices 2024"
 
-User: "Find hotels in Serengeti"
-CORRECT Response: TAVILY_SEARCH:Serengeti safari hotels accommodation
-
-DO NOT add any other text when searching. ONLY the TAVILY_SEARCH line.
-After I provide search results, then you format them nicely.
+AFTER SEARCH RESULTS ARE PROVIDED, format them naturally in your response with sources.
 
 EXPERTISE AREAS (TOURISM ONLY):
 1. Destination Recommendations - beaches, mountains, cities, cultural sites
@@ -200,42 +194,32 @@ Remember:
       if (data && data.result) {
         const cleanText = cleanMarkdown(data.result);
         
-        // Check if AI wants to search (more flexible pattern matching)
-        const searchPattern = /TAVILY[_\s]*SEARCH\s*:\s*(.+?)(?:\n|$)/i;
-        const searchMatch = cleanText.match(searchPattern);
-        
-        if (searchMatch) {
-          const searchQuery = searchMatch[1].trim();
+        // Check if AI wants to search
+        if (cleanText.includes("TAVILY_SEARCH:")) {
+          const searchQuery = cleanText.split("TAVILY_SEARCH:")[1].split("\n")[0].trim();
           
           // Show searching message
           setMessages((prev) => [...prev, { 
-            text: `🔍 Searching for "${searchQuery}"...`, 
+            text: `🔍 Searching for: "${searchQuery}"...`, 
             sender: "bot" 
           }]);
           
           // Call Tavily
           const searchData = await callTavilySearch(searchQuery);
           
-          if (searchData && searchData.results && searchData.results.length > 0) {
+          if (searchData && searchData.results.length > 0) {
             // Format search results for AI to present
             const resultsText = searchData.results
               .slice(0, 3)
-              .map((r: any, i: number) => `${i + 1}. ${r.title}\nSource: ${r.url}\n${r.content.substring(0, 200)}...`)
+              .map((r: any, i: number) => `${i + 1}. ${r.title}\n${r.content.substring(0, 150)}...`)
               .join("\n\n");
             
-            const formattingPrompt = `You are a tourism expert. Based on the web search results below, provide a helpful, natural response to the user's question: "${messageText}"
+            const formattingPrompt = `Based on the search results below, provide a helpful tourism response to the user's question: "${messageText}"
 
-Web Search Results:
+Search Results:
 ${resultsText}
 
-${searchData.answer ? `Summary: ${searchData.answer}` : ''}
-
-Instructions:
-- Write naturally as if you're sharing recommendations with a friend
-- Mention 2-3 key findings from the results
-- Reference that this is current information from the web
-- End with "Would you like more details about any of these, or is this helpful for now?"
-- Keep it concise (3-4 sentences)`;
+Format your response naturally, mention the sources, and end with "Would you like more details, or is this helpful for now?"`;
 
             const formattingUrl = `https://CreepyTech-creepy-ai.hf.space/ai/logic?q=${encodeURIComponent(
               formattingPrompt
@@ -252,7 +236,7 @@ Instructions:
                   text: cleanMarkdown(formattedData.result),
                   sender: "bot",
                   searchResults: searchData.results.slice(0, 3),
-                  images: searchData.images && searchData.images.length > 0 ? searchData.images.slice(0, 4) : undefined
+                  images: searchData.images.slice(0, 4)
                 }];
               });
             }
@@ -261,7 +245,7 @@ Instructions:
             setMessages((prev) => {
               const updated = prev.slice(0, -1);
               return [...updated, { 
-                text: "I tried searching for current information but couldn't retrieve results at the moment. Let me share what I know from my tourism expertise! For the most current details on lodges, prices, and availability, I recommend checking booking platforms like Booking.com or TripAdvisor. Would you like general information about Zanzibar accommodations instead?",
+                text: "I couldn't find current search results, but I can share general tourism information about that! " + cleanText.replace(/TAVILY_SEARCH:.*/, ""),
                 sender: "bot"
               }];
             });

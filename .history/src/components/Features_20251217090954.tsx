@@ -84,8 +84,8 @@ interface Stat {
 
 const stats: Stat[] = [
   { icon: Globe2, value: "50+", label: "Virtual Tours", gradient: "from-safari to-sunset" },
-  { icon: Users, value: "200+", label: "Global Users", gradient: "from-ocean to-ocean-light" },
-  { icon: Heart, value: "100+", label: "Local Creators", gradient: "from-sunset to-safari" },
+  { icon: Users, value: "10K+", label: "Global Users", gradient: "from-ocean to-ocean-light" },
+  { icon: Heart, value: "150+", label: "Local Creators", gradient: "from-sunset to-safari" },
   { icon: Star, value: "4.9", label: "User Rating", gradient: "from-ocean to-safari" }
 ];
 
@@ -527,205 +527,52 @@ export default function Features() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 mb-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm shadow-2xl shadow-ocean/10">
             <Star className="w-4 h-4 text-ocean animate-pulse" />
-            <span className="text-white/60 text-sm font-medium tracking-wide">Impact & Growth</span>
+            <span className="text-white/60 text-sm font-medium tracking-wide">By The Numbers</span>
           </div>
-          <h3 
-            className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #FCD34D 0%, #F97316 50%, #0891B2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Transforming Tourism
-          </h3>
-          <p className="text-white/50 text-lg">One virtual experience at a time</p>
         </div>
 
-        {/* Circular Orbital Stats Display */}
-        <div ref={statsRef} className="relative h-[600px] md:h-[700px] flex items-center justify-center" style={{ perspective: '2000px' }}>
-          
-          {/* Center focal point - African drum/cultural symbol */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-            <div 
-              className="relative w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center"
-              style={{
-                background: 'linear-gradient(135deg, rgba(249,115,22,0.2) 0%, rgba(8,145,178,0.2) 100%)',
-                boxShadow: '0 0 60px rgba(249,115,22,0.3), 0 0 100px rgba(8,145,178,0.2), inset 0 0 30px rgba(255,255,255,0.1)',
-                border: '2px solid rgba(255,255,255,0.1)',
-              }}
-            >
-              <div className="absolute inset-0 rounded-full border-2 border-white/10 animate-ping" style={{ animationDuration: '3s' }} />
-              <div className="absolute inset-2 rounded-full border-2 border-safari/30 animate-pulse" />
-              <Globe2 className="w-16 h-16 md:w-20 md:h-20 text-white/80 animate-float-slow" />
-              
-              {/* Rotating rings */}
-              <div className="absolute inset-[-20px] rounded-full border border-ocean/20 animate-spin" style={{ animationDuration: '20s' }} />
-              <div className="absolute inset-[-30px] rounded-full border border-safari/20 animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }} />
-            </div>
-          </div>
-
-          {/* Stats in orbital positions */}
+        <div ref={statsRef} className="grid grid-cols-2 lg:grid-cols-4 gap-6" style={{ perspective: '1000px' }}>
           {stats.map((stat, index) => {
             const IconComponent = stat.icon;
-            const angle = (index * 90) - 45; // 0°, 90°, 180°, 270° positions
-            const radius = window.innerWidth < 768 ? 180 : 250;
-            const x = Math.cos((angle * Math.PI) / 180) * radius;
-            const y = Math.sin((angle * Math.PI) / 180) * radius;
-            
             return (
               <div 
                 key={index}
-                className="absolute top-1/2 left-1/2 group"
-                style={{ 
-                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                  transformStyle: 'preserve-3d'
-                }}
+                className="group relative"
+                style={{ transformStyle: 'preserve-3d' }}
               >
-                {/* Connection line to center */}
-                <svg 
-                  className="absolute top-1/2 left-1/2 pointer-events-none -z-10"
+                <div className={`absolute -inset-1 bg-gradient-to-br ${stat.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                
+                <div 
+                  className="relative p-8 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-500 text-center backdrop-blur-sm group-hover:-translate-y-2"
                   style={{
-                    width: `${Math.abs(x) * 2}px`,
-                    height: `${Math.abs(y) * 2}px`,
-                    transform: `translate(-50%, -50%) rotate(${angle}deg)`,
+                    background: 'linear-gradient(135deg, rgba(13,18,32,0.8) 0%, rgba(10,14,26,0.9) 100%)',
+                    transformStyle: 'preserve-3d',
                   }}
                 >
-                  <line 
-                    x1="50%" 
-                    y1="50%" 
-                    x2={x > 0 ? "0%" : "100%"} 
-                    y2="50%" 
-                    stroke="url(#lineGradient)" 
-                    strokeWidth="2" 
-                    opacity="0.2"
-                    strokeDasharray="5,5"
-                    className="animate-pulse-slow"
-                  />
-                </svg>
-
-                {/* Stat card with 3D effect */}
-                <div 
-                  className="relative w-48 md:w-56"
-                  style={{ transformStyle: 'preserve-3d' }}
-                >
-                  {/* 3D glow layers */}
                   <div 
-                    className={`absolute -inset-2 bg-gradient-to-br ${stat.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-50 transition-all duration-700`}
-                    style={{ transform: 'translateZ(-30px)' }}
-                  />
-                  
-                  {/* Main card */}
+                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-2xl`}
+                    style={{ transform: 'translateZ(20px)' }}
+                  >
+                    <IconComponent className="w-7 h-7 text-white" />
+                  </div>
                   <div 
-                    className="relative p-6 md:p-8 rounded-3xl border border-white/10 hover:border-white/30 transition-all duration-500 text-center backdrop-blur-lg group-hover:-translate-y-4 group-hover:rotate-3"
+                    className="text-4xl font-display font-bold mb-2"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(13,18,32,0.95) 0%, rgba(10,14,26,0.98) 100%)',
-                      transformStyle: 'preserve-3d',
-                      boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                      background: `linear-gradient(135deg, ${stat.gradient.includes('safari') ? '#F97316' : '#0891B2'} 0%, ${stat.gradient.includes('ocean') ? '#67E8F9' : '#FCD34D'} 100%)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      transform: 'translateZ(15px)'
                     }}
                   >
-                    {/* Decorative corner elements */}
-                    <div className="absolute top-2 left-2 w-8 h-8 border-l-2 border-t-2 border-safari/30 rounded-tl-xl" />
-                    <div className="absolute bottom-2 right-2 w-8 h-8 border-r-2 border-b-2 border-ocean/30 rounded-br-xl" />
-
-                    {/* Icon with cultural pattern background */}
-                    <div className="relative mb-4">
-                      <div 
-                        className="absolute inset-0 opacity-10"
-                        style={{
-                          backgroundImage: `repeating-linear-gradient(45deg, ${stat.gradient.includes('safari') ? '#F97316' : '#0891B2'} 0px, transparent 2px, transparent 4px, ${stat.gradient.includes('safari') ? '#F97316' : '#0891B2'} 6px)`,
-                          borderRadius: '16px'
-                        }}
-                      />
-                      <div 
-                        className={`relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl`}
-                        style={{ transform: 'translateZ(40px)' }}
-                      >
-                        <IconComponent className="w-8 h-8 md:w-10 md:h-10 text-white" />
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/30 to-transparent" />
-                      </div>
-                    </div>
-
-                    {/* Value with animated counting effect */}
-                    <div 
-                      className="text-5xl md:text-6xl font-display font-bold mb-2 relative"
-                      style={{
-                        background: `linear-gradient(135deg, ${stat.gradient.includes('safari') ? '#F97316' : '#0891B2'} 0%, ${stat.gradient.includes('ocean') ? '#67E8F9' : '#FCD34D'} 100%)`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        transform: 'translateZ(30px)',
-                        textShadow: '0 0 40px rgba(249,115,22,0.3)'
-                      }}
-                    >
-                      {stat.value}
-                      
-                      {/* Animated sparkles */}
-                      <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-safari animate-pulse" style={{ animationDelay: `${index * 0.2}s` }} />
-                    </div>
-
-                    {/* Label */}
-                    <div 
-                      className="text-white/60 text-sm md:text-base font-medium tracking-wide uppercase"
-                      style={{ transform: 'translateZ(20px)' }}
-                    >
-                      {stat.label}
-                    </div>
-
-                    {/* African pattern decoration at bottom */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 overflow-hidden rounded-b-3xl">
-                      <div 
-                        className={`h-full bg-gradient-to-r ${stat.gradient} opacity-50`}
-                        style={{
-                          backgroundSize: '20px 100%',
-                          backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,0.1) 5px, rgba(255,255,255,0.1) 10px)`
-                        }}
-                      />
-                    </div>
+                    {stat.value}
                   </div>
-
-                  {/* Floating particles around card */}
-                  <div className="absolute -top-4 -right-4 w-2 h-2 rounded-full bg-safari/60 animate-float" style={{ animationDelay: `${index * 0.3}s` }} />
-                  <div className="absolute -bottom-4 -left-4 w-2 h-2 rounded-full bg-ocean/60 animate-float" style={{ animationDelay: `${index * 0.3 + 0.5}s` }} />
+                  <div className="text-white/50 text-sm font-medium" style={{ transform: 'translateZ(10px)' }}>
+                    {stat.label}
+                  </div>
                 </div>
               </div>
             );
           })}
-
-          {/* Rotating orbit rings */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-            <div 
-              className="absolute w-[400px] h-[400px] md:w-[550px] md:h-[550px] rounded-full border-2 border-dashed border-safari/10 animate-spin"
-              style={{ 
-                animationDuration: '40s',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)'
-              }}
-            />
-            <div 
-              className="absolute w-[450px] h-[450px] md:w-[600px] md:h-[600px] rounded-full border border-ocean/10 animate-spin"
-              style={{ 
-                animationDuration: '50s',
-                animationDirection: 'reverse',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)'
-              }}
-            />
-          </div>
-
-          {/* Decorative floating elements */}
-          <div className="absolute top-10 left-10 w-3 h-3 rounded-full bg-sunset/40 animate-float" />
-          <div className="absolute top-20 right-16 w-2 h-2 rounded-full bg-safari/40 animate-float" style={{ animationDelay: '0.5s' }} />
-          <div className="absolute bottom-16 left-20 w-3 h-3 rounded-full bg-ocean/40 animate-float" style={{ animationDelay: '1s' }} />
-          <div className="absolute bottom-10 right-10 w-2 h-2 rounded-full bg-sunset/40 animate-float" style={{ animationDelay: '1.5s' }} />
-
-          <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#F97316" stopOpacity="0.5"/>
-              <stop offset="100%" stopColor="#0891B2" stopOpacity="0.5"/>
-            </linearGradient>
-          </defs>
         </div>
 
       </div>
