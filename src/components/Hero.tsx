@@ -124,18 +124,18 @@ export default function Hero() {
       />
 
       {/* Main content container */}
-      <div className="container mx-auto px-6 md:px-10 lg:px-20 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-4 items-center min-h-screen py-20 lg:py-0">
+      <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-16 xl:px-20 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center min-h-screen pt-24 pb-16 lg:py-0">
           
           {/* LEFT SIDE - Content */}
           <div className="flex flex-col justify-center order-2 lg:order-1 text-center lg:text-left">
-            {/* Logo */}
-            <div ref={logoRef} className="mb-8 lg:mb-12">
-              <div className="inline-flex items-center gap-3">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-safari to-ocean flex items-center justify-center shadow-lg shadow-safari/20">
-                  <Compass className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            {/* Logo - Hidden on mobile as navbar has it */}
+            <div ref={logoRef} className="mb-6 md:mb-8 lg:mb-12 hidden sm:block">
+              <div className="inline-flex items-center gap-2 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-safari to-ocean flex items-center justify-center shadow-lg shadow-safari/20">
+                  <Compass className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
-                <span className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">
+                <span className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-white tracking-tight">
                   KILISEE
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default function Hero() {
             {/* Headline */}
             <h1
               ref={headlineRef}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.1] mb-6 max-w-[600px] mx-auto lg:mx-0"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-[1.1] mb-4 sm:mb-6 max-w-[600px] mx-auto lg:mx-0"
               style={{
                 background: 'linear-gradient(135deg, #FCD34D 0%, #F97316 50%, #0891B2 100%)',
                 WebkitBackgroundClip: 'text',
@@ -159,38 +159,38 @@ export default function Hero() {
             {/* Subtitle */}
             <p
               ref={subtitleRef}
-              className="text-base md:text-lg lg:text-xl text-white/70 max-w-[550px] mx-auto lg:mx-0 leading-relaxed mb-8 lg:mb-10"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-white/70 max-w-[550px] mx-auto lg:mx-0 leading-relaxed mb-6 sm:mb-8 lg:mb-10 px-2 sm:px-0"
             >
               AI-Powered Virtual Safaris • Immersive Cultural Tours • Future of Travel
             </p>
 
             {/* CTA Button */}
-            <div ref={ctaRef} className="mb-8">
-              <Link to="/auth">
+            <div ref={ctaRef} className="mb-6 sm:mb-8 px-4 sm:px-0">
+              <Link to="/auth" className="block sm:inline-block">
                 <Button 
                   size="lg" 
-                  className="group relative px-8 md:px-12 py-6 md:py-7 text-base md:text-lg font-semibold rounded-full bg-gradient-to-r from-safari to-ocean hover:from-safari-light hover:to-ocean-light transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.4)]"
+                  className="group relative w-full sm:w-auto px-6 sm:px-8 md:px-12 py-5 sm:py-6 md:py-7 text-sm sm:text-base md:text-lg font-semibold rounded-full bg-gradient-to-r from-safari to-ocean hover:from-safari-light hover:to-ocean-light transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.4)]"
                 >
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center justify-center gap-2">
                     Start Virtual Journey
-                    <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-2" />
                   </span>
                 </Button>
               </Link>
             </div>
 
             {/* Feature Badges */}
-            <div ref={badgesRef} className="flex flex-wrap gap-3 justify-center lg:justify-start">
+            <div ref={badgesRef} className="flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start px-2 sm:px-0">
               {[
-                { icon: PlayCircle, label: "50+ Virtual Tours" },
+                { icon: PlayCircle, label: "50+ Tours" },
                 { icon: Sparkles, label: "AI Guide" },
                 { icon: Compass, label: "4K Quality" },
               ].map((badge, index) => (
                 <div 
                   key={index}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/70 text-sm backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs sm:text-sm backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                 >
-                  <badge.icon className="w-4 h-4 text-safari" />
+                  <badge.icon className="w-3 h-3 sm:w-4 sm:h-4 text-safari" />
                   <span>{badge.label}</span>
                 </div>
               ))}
@@ -200,11 +200,11 @@ export default function Hero() {
           {/* RIGHT SIDE - 3D Globe */}
           <div 
             ref={globeContainerRef}
-            className="relative h-[50vh] lg:h-[80vh] order-1 lg:order-2"
+            className="relative h-[40vh] sm:h-[45vh] md:h-[50vh] lg:h-[75vh] xl:h-[80vh] order-1 lg:order-2"
           >
             <Suspense fallback={
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 border-4 border-safari/30 border-t-safari rounded-full animate-spin" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-safari/30 border-t-safari rounded-full animate-spin" />
               </div>
             }>
               <Globe3D />
@@ -213,15 +213,15 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator - Hidden on small mobile */}
       <div 
         ref={scrollRef}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-1 sm:gap-2 cursor-pointer z-20 hidden sm:flex"
         onClick={() => document.querySelector('#services')?.scrollIntoView({ behavior: 'smooth' })}
       >
-        <span className="text-white/50 text-sm font-medium">Discover Below</span>
+        <span className="text-white/50 text-xs sm:text-sm font-medium">Discover Below</span>
         <div className="animate-bounce">
-          <ChevronDown className="w-6 h-6 text-white/50" />
+          <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-white/50" />
         </div>
       </div>
     </section>

@@ -217,19 +217,19 @@ export default function Features() {
     <section 
       id="services"
       ref={sectionRef} 
-      className="relative overflow-hidden py-32"
+      className="relative overflow-hidden py-16 sm:py-24 md:py-32"
       style={{
         background: 'linear-gradient(180deg, #0a0e1a 0%, #0d1220 50%, #0a0e1a 100%)',
         perspective: '1000px'
       }}
     >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-safari/5 rounded-full blur-[150px] animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-[700px] h-[700px] bg-ocean/5 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sunset/3 rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-0 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-safari/5 rounded-full blur-[150px] animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-[350px] h-[350px] md:w-[700px] md:h-[700px] bg-ocean/5 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-sunset/3 rounded-full blur-[120px]" />
       </div>
 
-      <div ref={floatingRef} className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div ref={floatingRef} className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
         <div className="float-element absolute top-20 left-[10%] w-32 h-32 rounded-full border-2 border-safari/20 backdrop-blur-sm" />
         <div className="float-element absolute top-40 right-[15%] w-24 h-24 rounded-2xl border-2 border-ocean/20 backdrop-blur-sm rotate-45" />
         <div className="float-element absolute bottom-32 left-[20%] w-40 h-40 rounded-full border-2 border-sunset/20 backdrop-blur-sm" />
@@ -246,16 +246,16 @@ export default function Features() {
         }}
       />
 
-      <div className="container mx-auto px-6 lg:px-10 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
         
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 mb-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm shadow-2xl shadow-safari/10">
-            <Sparkles className="w-4 h-4 text-safari animate-pulse" />
-            <span className="text-white/60 text-sm font-medium tracking-wide">What We Offer</span>
+        <div className="text-center mb-12 sm:mb-16 md:mb-20">
+          <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 mb-6 sm:mb-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm shadow-2xl shadow-safari/10">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-safari animate-pulse" />
+            <span className="text-white/60 text-xs sm:text-sm font-medium tracking-wide">What We Offer</span>
           </div>
           
           <h2 
-            className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.05] tracking-tight max-w-4xl mx-auto transform-gpu"
+            className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-[1.05] tracking-tight max-w-4xl mx-auto transform-gpu px-2"
             style={{
               background: 'linear-gradient(135deg, #FCD34D 0%, #F97316 40%, #0891B2 100%)',
               WebkitBackgroundClip: 'text',
@@ -267,37 +267,38 @@ export default function Features() {
             Reimagined
           </h2>
           
-          <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/50 max-w-xl md:max-w-2xl mx-auto leading-relaxed px-4">
             Experience Tanzania's wonders through cutting-edge AI and immersive technology
           </p>
         </div>
 
+        {/* Mobile-first grid - simplified on mobile */}
         <div 
           ref={servicesRef} 
-          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[280px] gap-6 mb-32"
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-[180px] sm:auto-rows-[220px] md:auto-rows-[280px] gap-3 sm:gap-4 md:gap-6 mb-16 sm:mb-24 md:mb-32"
           style={{ transformStyle: 'preserve-3d' }}
         >
           {services.map((service, index) => {
             const IconComponent = service.icon;
             const isLarge = service.size === 'large';
-            const isMedium = service.size === 'medium';
+            
+            // Mobile-friendly positions - span 1 on mobile, original on larger screens
+            const mobilePosition = 'col-span-1 row-span-1';
+            const responsivePosition = `${mobilePosition} md:${service.position}`;
             
             return (
               <div
                 key={index}
                 ref={addToRefs}
-                className={`group relative ${service.position}`}
+                className={`group relative ${responsivePosition}`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                <div className={`absolute -inset-1 bg-gradient-to-br ${service.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-700 transform group-hover:scale-110`} 
+                <div className={`absolute -inset-1 bg-gradient-to-br ${service.gradient} rounded-2xl sm:rounded-3xl blur-xl sm:blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-700 transform group-hover:scale-110`} 
                   style={{ transform: 'translateZ(-20px)' }}
-                />
-                <div className={`absolute -inset-2 bg-gradient-to-br ${service.gradient} rounded-3xl blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700`} 
-                  style={{ transform: 'translateZ(-40px)' }}
                 />
                 
                 <div 
-                  className="relative h-full p-6 md:p-8 rounded-3xl border transition-all duration-700 group-hover:border-white/30 overflow-hidden"
+                  className="relative h-full p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border transition-all duration-700 group-hover:border-white/30 overflow-hidden"
                   style={{
                     background: 'linear-gradient(135deg, rgba(13,18,32,0.9) 0%, rgba(10,14,26,0.95) 100%)',
                     borderColor: 'rgba(255,255,255,0.1)',
@@ -315,36 +316,38 @@ export default function Features() {
                   />
 
                   <div 
-                    className={`${isLarge ? 'w-20 h-20 mb-6' : 'w-14 h-14 mb-4'} rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative`}
+                    className={`${isLarge ? 'w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mb-3 sm:mb-4 md:mb-6' : 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 mb-2 sm:mb-3 md:mb-4'} rounded-xl sm:rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-xl sm:shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative`}
                     style={{ 
                       transformStyle: 'preserve-3d',
                       transform: 'translateZ(30px)'
                     }}
                   >
-                    <IconComponent className={`${isLarge ? 'w-10 h-10' : 'w-7 h-7'} text-white`} />
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent" />
+                    <IconComponent className={`${isLarge ? 'w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10' : 'w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7'} text-white`} />
+                    <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-t from-black/20 to-transparent" />
                   </div>
 
                   <div className="relative z-10 h-full flex flex-col">
                     <h3 
-                      className={`${isLarge ? 'text-3xl mb-4' : isMedium ? 'text-2xl mb-3' : 'text-xl mb-2'} font-display font-bold text-white group-hover:text-safari transition-colors duration-300`}
+                      className={`${isLarge ? 'text-lg sm:text-xl md:text-2xl lg:text-3xl mb-1 sm:mb-2 md:mb-4' : 'text-base sm:text-lg md:text-xl lg:text-2xl mb-1 sm:mb-2 md:mb-3'} font-display font-bold text-white group-hover:text-safari transition-colors duration-300 leading-tight`}
                       style={{ transform: 'translateZ(20px)' }}
                     >
                       {service.title}
                     </h3>
                     
+                    {/* Hide description on very small mobile to save space */}
                     <p 
-                      className={`text-white/60 ${isLarge ? 'text-base mb-6' : 'text-sm mb-4'} leading-relaxed`}
+                      className={`text-white/60 ${isLarge ? 'text-xs sm:text-sm md:text-base mb-2 sm:mb-4 md:mb-6' : 'text-xs sm:text-sm mb-2 sm:mb-3 md:mb-4'} leading-relaxed hidden xs:block sm:block`}
                       style={{ transform: 'translateZ(10px)' }}
                     >
                       {service.description}
                     </p>
 
-                    <div className="flex flex-wrap gap-2 mb-auto">
+                    {/* Hide features on mobile */}
+                    <div className="hidden sm:flex flex-wrap gap-1.5 sm:gap-2 mb-auto">
                       {service.features.map((feature, i) => (
                         <span 
                           key={i}
-                          className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50 text-xs font-medium backdrop-blur-sm group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300"
+                          className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50 text-[10px] sm:text-xs font-medium backdrop-blur-sm group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300"
                           style={{ transform: `translateZ(${5 + i * 2}px)` }}
                         >
                           {feature}

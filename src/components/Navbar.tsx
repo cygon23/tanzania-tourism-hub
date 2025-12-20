@@ -72,14 +72,14 @@ export default function Navbar() {
       : "bg-[#0a0e1a]/60 backdrop-blur-md"  
   }`}
 >
-      <div className="container mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between h-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-safari to-ocean rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(249,115,22,0.4)]">
-              <Compass className="w-5 h-5 text-white" />
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-safari to-ocean rounded-lg sm:rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(249,115,22,0.4)]">
+              <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <span className="text-2xl font-display font-bold text-white tracking-tight">
+            <span className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">
               KILISEE
             </span>
           </Link>
@@ -127,18 +127,18 @@ export default function Navbar() {
           {/* Mobile Menu */}
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10">
+              <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 w-9 h-9 sm:w-10 sm:h-10">
                 <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-[#0a0e1a] border-white/10">
-              <div className="flex flex-col space-y-4 mt-8">
+            <SheetContent side="right" className="w-[280px] sm:w-80 bg-[#0a0e1a] border-white/10 p-4 sm:p-6">
+              <div className="flex flex-col space-y-3 sm:space-y-4 mt-6 sm:mt-8">
                 {/* Mobile Logo */}
-                <div className="flex items-center gap-3 pb-6 border-b border-white/10">
-                  <div className="w-10 h-10 bg-gradient-to-br from-safari to-ocean rounded-xl flex items-center justify-center">
-                    <Compass className="w-5 h-5 text-white" />
+                <div className="flex items-center gap-2 sm:gap-3 pb-4 sm:pb-6 border-b border-white/10">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-safari to-ocean rounded-xl flex items-center justify-center">
+                    <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-2xl font-display font-bold text-white">
+                  <span className="text-xl sm:text-2xl font-display font-bold text-white">
                     KILISEE
                   </span>
                 </div>
@@ -154,7 +154,7 @@ export default function Navbar() {
                           scrollToSection(item.href);
                           setIsMobileMenuOpen(false);
                         }}
-                        className={`px-4 py-3 rounded-xl text-left text-sm font-medium transition-all duration-200 ${
+                        className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-left text-sm font-medium transition-all duration-200 ${
                           isActive
                             ? "text-white bg-white/10"
                             : "text-white/60 hover:text-white hover:bg-white/5"
@@ -167,14 +167,14 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Auth Buttons */}
-                <div className="flex flex-col gap-3 pt-6 border-t border-white/10">
+                <div className="flex flex-col gap-2 sm:gap-3 pt-4 sm:pt-6 border-t border-white/10">
                   <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full rounded-full border-white/20 text-white hover:bg-white/10">
+                    <Button variant="outline" className="w-full rounded-full border-white/20 text-white hover:bg-white/10 py-2.5">
                       Sign In
                     </Button>
                   </Link>
                   <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="w-full rounded-full bg-gradient-to-r from-safari to-ocean">
+                    <Button className="w-full rounded-full bg-gradient-to-r from-safari to-ocean py-2.5">
                       Get Started
                     </Button>
                   </Link>
