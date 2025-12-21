@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { lazy, Suspense, useState, useEffect } from "react";
 import { UserProvider, useUser } from "@/contexts/UserContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import TourismLoader from "@/components/TourismLoader";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
@@ -69,15 +70,17 @@ function AppContent() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-      </TooltipProvider>
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </TooltipProvider>
+      </UserProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

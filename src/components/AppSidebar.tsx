@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Home,
@@ -9,7 +8,12 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Menu,
+  MapPin,
+  Compass,
+  Heart,
+  Users,
+  Shield,
+  Plane,
 } from "lucide-react";
 import {
   Sidebar,
@@ -20,19 +24,32 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/contexts/UserContext";
+import { Badge } from "@/components/ui/badge";
 
-const menuItems = [
+// Admin menu items
+const adminMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Data Hub", url: "/dashboard/data-hub", icon: Database },
   { title: "AI Tour Guide", url: "/dashboard/ai-guide", icon: MessageCircle },
   { title: "Booking & Ads", url: "/dashboard/booking", icon: Calendar },
   { title: "Virtual Tourism", url: "/dashboard/virtual", icon: Camera },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
+  { title: "User Management", url: "/dashboard/users", icon: Users },
+];
+
+// User menu items
+const userMenuItems = [
+  { title: "Home", url: "/dashboard", icon: Home },
+  { title: "Explore", url: "/dashboard/explore", icon: Compass },
+  { title: "My Trips", url: "/dashboard/trips", icon: Plane },
+  { title: "AI Guide", url: "/dashboard/ai-guide", icon: MessageCircle },
+  { title: "Virtual Tours", url: "/dashboard/virtual", icon: Camera },
+  { title: "Saved", url: "/dashboard/saved", icon: Heart },
 ];
 
 const settingsItems = [
@@ -44,6 +61,10 @@ export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const isCollapsed = state === "collapsed";
+  const { user } = useUser();
+  
+  const isAdmin = user?.role === "admin";
+  const menuItems = isAdmin ? adminMenuItems : userMenuItems;
 
   const isActive = (path: string) => currentPath === path;
 
@@ -65,13 +86,28 @@ export function AppSidebar() {
               <span className="text-white font-bold text-sm">TZ</span>
             </div>
             <div>
-              <h2 className="font-semibold text-foreground">Tanzania Hub</h2>
-              <p className="text-xs text-muted-foreground">Tourism Platform</p>
+              <div className="flex items-center gap-2">
+                <h2 className="font-semibold text-foreground">Tanzania Hub</h2>
+                {isAdmin && (
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-sunset text-sunset">
+                    <Shield className="w-2.5 h-2.5 mr-0.5" />
+                    Admin
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {isAdmin ? "Admin Dashboard" : "Traveler Portal"}
+              </p>
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 bg-gradient-to-br from-safari to-ocean rounded-lg flex items-center justify-center mx-auto">
+          <div className="w-8 h-8 bg-gradient-to-br from-safari to-ocean rounded-lg flex items-center justify-center mx-auto relative">
             <span className="text-white font-bold text-sm">TZ</span>
+            {isAdmin && (
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-sunset rounded-full flex items-center justify-center">
+                <Shield className="w-2 h-2 text-white" />
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -79,7 +115,7 @@ export function AppSidebar() {
       <SidebarContent className="flex-1 py-4">
         <SidebarGroup>
           <SidebarGroupLabel className={isCollapsed ? "sr-only" : ""}>
-            Main Menu
+            {isAdmin ? "Admin Menu" : "Explore"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
