@@ -49,6 +49,7 @@ const userMenuItems = [
   { title: "My Trips", url: "/dashboard/trips", icon: Plane },
   { title: "AI Guide", url: "/dashboard/ai-guide", icon: MessageCircle },
   { title: "Virtual Tours", url: "/dashboard/virtual", icon: Camera },
+  { title: "My Analytics", url: "/dashboard/my-analytics", icon: BarChart3 },
   { title: "Saved", url: "/dashboard/saved", icon: Heart },
 ];
 

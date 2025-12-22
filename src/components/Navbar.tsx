@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Compass } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navigationItems = [
   { name: "Home", href: "#hero" },
@@ -107,8 +108,9 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Auth Buttons */}
+          {/* Auth Buttons & Theme Toggle */}
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             <Link to="/auth">
               <Button 
                 variant="ghost" 
@@ -166,8 +168,12 @@ export default function Navbar() {
                   })}
                 </div>
 
-                {/* Mobile Auth Buttons */}
+                {/* Mobile Theme Toggle & Auth Buttons */}
                 <div className="flex flex-col gap-2 sm:gap-3 pt-4 sm:pt-6 border-t border-white/10">
+                  <div className="flex items-center justify-between px-1 pb-2">
+                    <span className="text-sm text-white/60">Theme</span>
+                    <ThemeToggle />
+                  </div>
                   <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full rounded-full border-white/20 text-white hover:bg-white/10 py-2.5">
                       Sign In

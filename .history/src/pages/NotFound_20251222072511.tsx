@@ -83,6 +83,10 @@ const NotFound = () => {
         background: 'radial-gradient(ellipse at center, #0f1628 0%, #0a0e1a 50%, #050810 100%)',
       }}
     >
+      {/* Theme Toggle */}
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
       {/* Ambient background effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-safari/10 rounded-full blur-[150px] animate-pulse" />

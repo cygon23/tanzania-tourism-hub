@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Compass, Map, Calendar, Info, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const quickActions = [
   { icon: Map, label: "Destinations", value: "What destinations do you recommend?" },
@@ -373,13 +374,16 @@ Instructions:
                     </div>
                   </div>
 
-                  <motion.button
-                    whileHover={{ rotate: 90, scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsOpen(false)}
-                    className='w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors'>
-                    <X className='w-5 h-5 text-white' />
-                  </motion.button>
+                  <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    <motion.button
+                      whileHover={{ rotate: 90, scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setIsOpen(false)}
+                      className='w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors'>
+                      <X className='w-5 h-5 text-white' />
+                    </motion.button>
+                  </div>
                 </div>
               </motion.div>
 

@@ -10,6 +10,7 @@ import UserDashboardHome from "@/components/dashboard/UserDashboardHome";
 import UserExplore from "@/components/dashboard/UserExplore";
 import UserTrips from "@/components/dashboard/UserTrips";
 import UserSaved from "@/components/dashboard/UserSaved";
+import UserAnalytics from "@/components/dashboard/UserAnalytics";
 import DataHub from "@/components/dashboard/DataHub";
 import AIGuide from "@/components/dashboard/AIGuide";
 import Booking from "@/components/dashboard/Booking";
@@ -126,6 +127,7 @@ export default function Dashboard() {
               <Route path="explore" element={<UserExplore />} />
               <Route path="trips" element={<UserTrips />} />
               <Route path="saved" element={<UserSaved />} />
+              <Route path="my-analytics" element={<UserAnalytics />} />
             </Routes>
           </main>
         </div>
